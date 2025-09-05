@@ -43,6 +43,10 @@ INSTALLED_APPS = [
     'app_run'
 ]
 
+COMPANY_NAME = 'RunFlow'
+COMPANY_SLOGAN = 'Лёгкий бег — лёгкие мысли'
+COMPANY_CONTACTS = 'Москва, Фрунзенская набережная, дом 7'
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
