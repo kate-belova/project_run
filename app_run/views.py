@@ -23,7 +23,7 @@ def company_details(request):
 class RunViewSet(viewsets.ModelViewSet):
     """API для работы с пробежками"""
 
-    queryset = Run.objects.all()
+    queryset = Run.objects.select_related('athlete').all()
     serializer_class = RunSerializer
 
 
