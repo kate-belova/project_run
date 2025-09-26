@@ -3,6 +3,7 @@ from rest_framework import serializers
 
 from app_run.models import Run
 
+
 class AthleteSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
