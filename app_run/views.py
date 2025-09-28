@@ -1,9 +1,11 @@
 from django.conf import settings
 from django.contrib.auth.models import User
-from rest_framework import viewsets
+from django.shortcuts import get_object_or_404
+from rest_framework import viewsets, status
 from rest_framework.decorators import api_view
 from rest_framework.filters import SearchFilter
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from app_run.models import Run
 from app_run.serializers import RunSerializer, UserSerializer
@@ -26,6 +28,32 @@ class RunViewSet(viewsets.ModelViewSet):
 
     queryset = Run.objects.select_related('athlete').all()
     serializer_class = RunSerializer
+
+class RunStartView(APIView):
+    def post(self, request, run_id):
+        run = get_object_or_404(Run, id=run_id)
+
+        if run.status != 'init':
+            message = {'error': 'Забег уже стартовал или завершен.'}
+            return Response(message, status=status.HTTP_400_BAD_REQUEST)
+
+        run.status = 'in_progress'
+        run.save()
+        return Response(RunSerializer(run).data, status=status.HTTP_200_OK)
+
+
+class RunStopView(APIView):
+    def post(self, request, run_id):
+        run = get_object_or_404(Run, id=run_id)
+
+        if run.status != 'in_progress':
+            message = {'error': 'Забег нельзя завершить - '
+                                'он еще не начат или уже завершен.'}
+            return Response(message, status=status.HTTP_400_BAD_REQUEST)
+
+        run.status = 'finished'
+        run.save()
+        return Response(RunSerializer(run).data, status=status.HTTP_200_OK)
 
 
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
