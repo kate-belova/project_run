@@ -20,11 +20,12 @@ class RunSerializer(serializers.ModelSerializer):
 
 class UserSerializer(serializers.ModelSerializer):
     type = serializers.SerializerMethodField()
+    runs_finished = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = User
         fields = ['id', 'date_joined', 'username', 'first_name', 'last_name',
-                  'type']
+                  'type', 'runs_finished']
         read_only_fields = fields
 
     def get_type(self, obj):

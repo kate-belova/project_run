@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.db.models import Count, Q
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, status
@@ -82,7 +83,10 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
     pagination_class = UserPagination
 
     def get_queryset(self):
-        qs = self.queryset
+        qs = self.queryset.annotate(
+            runs_finished=Count('athlete',
+                                filter=Q(athlete__status='finished'))
+        )
         type_param = (self.request.query_params.get('type', '')
                       .lower().strip())
 
