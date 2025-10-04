@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 
-from app_run.models import Run
+from app_run.models import Run, AthleteInfo
 
 
 class AthleteSerializer(serializers.ModelSerializer):
@@ -30,3 +30,16 @@ class UserSerializer(serializers.ModelSerializer):
 
     def get_type(self, obj):
         return 'coach' if obj.is_staff else 'athlete'
+
+class AthleteInfoSerializer(serializers.ModelSerializer):
+    user_id = serializers.IntegerField(source='athlete.id', read_only=True)
+
+    class Meta:
+        model = AthleteInfo
+        fields = ['user_id', 'weight', 'goals']
+
+    def validate_weight(self, value):
+        if value is not None and (value <= 0 or value >= 900):
+            raise serializers.ValidationError(
+                'Вес должен быть больше 0 и меньше 900')
+        return value

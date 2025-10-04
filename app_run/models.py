@@ -25,3 +25,18 @@ class Run(models.Model):
 
     def __str__(self):
         return f'Пробежка {self.athlete.username} от {self.created_at}'
+
+
+class AthleteInfo(models.Model):
+    athlete = models.OneToOneField(User, on_delete=models.CASCADE,
+                                   related_name='athlete_info')
+    weight = models.IntegerField(blank=True, null=True, verbose_name='Вес')
+    goals = models.TextField(blank=True, verbose_name='Цели')
+
+    class Meta:
+        verbose_name = 'Информация об атлете'
+        verbose_name_plural = 'Информация об атлетах'
+
+    def __str__(self):
+        return f'Информация об атлете: {self.athlete.username}'
+
